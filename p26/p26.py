@@ -23,7 +23,6 @@ import math
 
 def main():
 
-    
     # for i in range(1, 1000):
     #     # fraction = "{:.16f}".format(1/i)
     #     getcontext().prec = 50
@@ -31,7 +30,7 @@ def main():
     #     print(f'1/{i}: {fraction}')
 
     repeat_length = []
-    for i in range(1, 100):
+    for i in range(1, 1000):
         targets = [] 
         target = int(math.pow(10,len(str(i))))
         # targets.append(1)
@@ -41,22 +40,15 @@ def main():
             if (target == 0):
                 repeat_length.append(0)
                 break
-            while(target < i):
-                target *= 10
+            target *= 10
             if (target in targets):
                 # check index width
                 repeat_length.append( len(targets)-targets.index(target) )
                 break
             
-            
-            
-
-
-
-
-        # starting number = 10 * length of denominator
-        # take starting number modulus denominator
-        # 
+    max_repeat_length = max(repeat_length)
+    max_index = repeat_length.index(max_repeat_length)+1
+    print(f'1/{max_index} has a repeat length of {max_repeat_length}')
 
     return()
 
