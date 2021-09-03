@@ -11,28 +11,51 @@ It can be seen that P4 + P7 = 22 + 70 = 92 = P8. However, their difference, 70 â
 Find the pair of pentagonal numbers, Pj and Pk, for which their sum and difference are pentagonal and D = |Pk âˆ’ Pj| is minimised; what is the value of D?
 '''
 
+import time
+
+NUM_PENT = 3_000
+
 def calc_pentagonal_number(n):
-    pentagonal_number = n*(3*n-1)/2
+    pentagonal_number = int(n*(3*n-1)/2)
     return(pentagonal_number)
 
 def main():
 
+    start_time = time.time()
     pent_nums = []
-    for i in range(1, 10_000):
+    for i in range(1, NUM_PENT+1):
         pent_nums.append(calc_pentagonal_number(i))
+    end_time = time.time()
+    print(f'Generating {NUM_PENT} Pentagonal Numbers took {end_time-start_time} seconds.')
 
-    add_list = []
-    sub_list = []
-    for j in pent_nums:
-        for k in pent_nums:    
-            if (j+k) <= pent_nums[-1]:
-                if (j+k) in pent_nums:
-                    add_list.append((j,k))
-            if (abs(j-k)) in pent_nums:
-                sub_list.append((j,k))
-            
-    both = set(add_list).intersection(set(sub_list))
-    print(both)
+    start_time = time.time()
+    min_pair = ()
+    for i_index, i in enumerate(pent_nums): 
+        for j_index_rel, j in enumerate(pent_nums[i_index:]): # We only have to check P_j that are greater than P_i
+            j_index_abs = i_index + j_index_rel
+            k = i+j 
+            if (k+j) > pent_nums[-1]:  # we didn't generate enough pent_nums to warrant the check, so stop
+                continue
+            try:
+                k_index = pent_nums[j_index_abs:].index(k) # start looking after where our P_j value is in the list since we know P_k is larger
+            except ValueError: # k not found in pent_nums; not a pentagonal number
+                continue
+            if (k+j) in pent_nums[k_index:]: # start looking after where our P_k value is in the list since we know P_k+P_j is larger
+                min_pair = (j,k)
+                break  # we have found our pair; stop inner loop
+            elif (k+i) in pent_nums[k_index:]:
+                min_pair = (i,k)
+                break  # we have found our pair; stop inner loop
+        if min_pair: 
+            break # we have found our pair; stop outer loop
+    end_time = time.time()
+    print(f'Making all comparisons took {end_time-start_time} seconds.')
+
+    if min_pair:
+        print(f'Minimised pentagonal pair: {min_pair}')
+        print(f'D = {abs(min_pair[0]-min_pair[1])}')
+    else:
+        print(f'No candidate pairs found')
 
     return()
 
